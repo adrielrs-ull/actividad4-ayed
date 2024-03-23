@@ -49,9 +49,14 @@ bool IsNotZero(const double val, const double eps = EPS) {
 
 // FASE II
 // constructor
-SllPolynomial::SllPolynomial(const vector_t<double>& v, const double eps) {
-  // poner el código aquí
-  
+
+SllPolynomial::SllPolynomial(const vector_t<double>& v, const double eps) { //se crea la lista, recorro el vector y almaceno las parejas por el frente
+  for (int i{v.get_size() - 1}; i >= 0; i--) {
+    if (IsNotZero(v.at(i), eps)) {
+      pair_double_t pair(v.get_val(i), i);
+      push_front(new SllPolyNode(pair));  
+    }
+  }
 }
 
 
@@ -88,27 +93,68 @@ std::ostream& operator<<(std::ostream& os, const SllPolynomial& p) {
 // Evaluación de un polinomio representado por lista simple
 double SllPolynomial::Eval(const double x) const {
   double result{0.0};
-  // poner el código aquí
-  
+  SllPolyNode* aux = get_head();
+  while (aux != NULL) {
+    result += pow(x, aux->get_data().get_inx()) * aux->get_data().get_val();
+    aux = aux->get_next();
+  }
   return result;
 }
 
 // Comparación si son iguales dos polinomios representados por listas simples
-bool SllPolynomial::IsEqual(const SllPolynomial& sllpol,
-			    const double eps) const {
+bool SllPolynomial::IsEqual(const SllPolynomial& sllpol, const double eps) const {
   bool differents = false;
-  // poner el código aquí
+  SllPolyNode* aux1 = get_head();
+  SllPolyNode* aux2 = sllpol.get_head();
+  while (aux1 != NULL && aux2 != NULL)  {
+    if (fabs(aux1->get_data().get_val() - aux2->get_data().get_val() > eps) || fabs(aux1->get_data().get_inx() - aux2->get_data().get_inx() > eps)) {
+      differents = true;
+      return !differents;
+    }
+    aux1 = aux1->get_next();
+    aux2 = aux2->get_next();
+  }
+
+  if (aux1 != NULL || aux2 != NULL) {
+    differents = true;
+    return !differents;
+  }
 
   return !differents;
 }
 
 // FASE IV
 // Generar nuevo polinomio suma del polinomio invocante mas otro polinomio
-void SllPolynomial::Sum(const SllPolynomial& sllpol,
-			SllPolynomial& sllpolsum,
-			const double eps) {
-  // poner el código aquí
-
+void SllPolynomial::Sum(const SllPolynomial& sllpol, SllPolynomial& sllpolsum, const double eps) {
+  SllPolyNode* aux1 = get_head();
+  SllPolyNode* aux2 = sllpol.get_head();
+  while (aux1 != NULL && aux2 != NULL) {
+    if (aux1->get_data().get_inx() - aux2->get_data().get_inx() > eps) { //si el índice del monomio del primero polinomio es mayor que el del primero
+      sllpolsum.push_front(new SllPolyNode(aux2->get_data()));
+      aux2 = aux2->get_next();
+    } else if (aux2->get_data().get_inx() - aux1->get_data().get_inx() > eps) { //si el índice del monomio del segundo polinomo es mayor que el del primero
+      sllpolsum.push_front(new SllPolyNode(aux1->get_data()));
+      aux1 = aux1->get_next();
+    } else { //el último cado que queda es que ambos índices sean iguales
+      pair_double_t pair(aux1->get_data().get_val() + aux2->get_data().get_val(), aux1->get_data().get_inx());
+      if (IsNotZero(pair.get_val(), eps)) {
+        sllpolsum.push_front(new SllPolyNode(pair));
+      }
+      aux1 = aux1->get_next();
+      aux2 = aux2->get_next();
+    }
+  }
+  //Todo este código si resulta que ambos polinomios tienen el mayor índice igual, pero y si el de uno fuera mayor
+  
+  while (aux1 != NULL || aux2 != NULL) {
+    if (aux1 != NULL) {
+      sllpolsum.push_front(new SllPolyNode(aux1->get_data()));
+      aux1 = aux1->get_next();
+    } else if (aux2 != NULL) {
+      sllpolsum.push_front(new SllPolyNode(aux2->get_data()));
+      aux2 = aux2->get_next();
+    }
+  }
 }
 
 
