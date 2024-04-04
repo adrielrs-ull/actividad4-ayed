@@ -40,6 +40,9 @@ class SllPolynomial : public sll_t<pair_double_t> {
   double Eval(const double) const;
   bool IsEqual(const SllPolynomial&, const double = EPS) const;
   void Sum(const SllPolynomial&, SllPolynomial&, const double = EPS);
+
+  //Modificación
+  double MaxCoefPair();
 };
 
 
@@ -49,6 +52,20 @@ bool IsNotZero(const double val, const double eps = EPS) {
 
 // FASE II
 // constructor
+
+//Modificación
+double SllPolynomial::MaxCoefPair() {
+  SllPolyNode* aux1 = get_head();
+  double resultado{0};
+  int max_ind{0};
+  while (aux1 != NULL) {
+    if ((aux1->get_data().get_inx() % 2 == 0) && (aux1->get_data().get_inx() >= max_ind)) {
+      resultado = aux1->get_data().get_val();
+    }
+    aux1 = aux1->get_next();
+  }
+  return resultado;
+}
 
 SllPolynomial::SllPolynomial(const vector_t<double>& v, const double eps) { //se crea la lista, recorro el vector y almaceno las parejas por el frente
   for (int i{v.get_size() - 1}; i >= 0; i--) {

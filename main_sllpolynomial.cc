@@ -71,6 +71,9 @@ int main()
   cout << "sllp1 + sllp2= " << sllpsum12;
   sllp2.Sum(sllp3, sllpsum23);
   cout << "sllp2 + sllp3= " << sllpsum23;
-
+     cout << endl;
+     cout << "Modificación 1º polinomio: " << sllp1.MaxCoefPair() << endl; 
+     cout << "Modificación 2º polinomio: " << sllp2.MaxCoefPair() << endl; 
+     cout << "Modificación 3º polinomio: " << sllp3.MaxCoefPair() << endl; 
   return 0;
 }
